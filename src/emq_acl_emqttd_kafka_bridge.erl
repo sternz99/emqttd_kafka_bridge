@@ -16,7 +16,7 @@
 
 -module(emq_acl_emqttd_kafka_bridge).
 
--include_lib("emqttd/include/emqttd.hrl").
+-include_lib("emqx/include/emqx.hrl").
 
 %% ACL callbacks
 -export([init/1, check_acl/2, reload_acl/1, description/0]).

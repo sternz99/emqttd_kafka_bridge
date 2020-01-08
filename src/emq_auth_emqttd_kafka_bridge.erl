@@ -18,7 +18,7 @@
 
 -behaviour(emqttd_auth_mod).
 
--include_lib("emqttd/include/emqttd.hrl").
+-include_lib("emqx/include/emqx.hrl").
 
 -export([init/1, check/3, description/0]).
 
