@@ -1,20 +1,25 @@
-PROJECT = emqttd_kafka_bridge
-PROJECT_DESCRIPTION = EMQTTD Kafka Bridge
-PROJECT_VERSION = 2.0.7
+## shallow clone for speed
 
-DEPS = ekaf
-dep_ekaf = git https://github.com/helpshift/ekaf master
+REBAR_GIT_CLONE_OPTIONS += --depth 1
+export REBAR_GIT_CLONE_OPTIONS
 
+REBAR = rebar3
+all: compile
 
-BUILD_DEPS = emqttd cuttlefish
-dep_emqttd = git https://github.com/emqtt/emqttd master
-dep_cuttlefish = git https://github.com/emqtt/cuttlefish
+compile:
+	$(REBAR) compile
 
-COVER = true
+ct: compile
+	$(REBAR) as test ct -v
 
-include erlang.mk
+eunit: compile
+	$(REBAR) as test eunit
 
-app:: rebar.config
+xref:
+	$(REBAR) xref
 
-app.config::
-	./deps/cuttlefish/cuttlefish -l info -e etc/ -c etc/emqttd_kafka_bridge.conf -i priv/emqttd_kafka_bridge.schema -d data
+clean: distclean
+
+distclean:
+	@rm -rf _build
+	@rm -f data/app.*.config data/vm.*.args rebar.lock
