@@ -16,11 +16,11 @@
 
 -module(emqttd_kafka_bridge).
 
--include_lib("emqttd/include/emqttd.hrl").
+-include_lib("emqx/include/emqx.hrl").
+-include_lib("emqx/include/emqx_mqtt.hrl").
+-include_lib("emqx/include/logger.hrl").
+-include_lib("emqx/include/types.hrl").
 
--include_lib("emqttd/include/emqttd_protocol.hrl").
-
--include_lib("emqttd/include/emqttd_internal.hrl").
 -import(string,[concat/2]).
 -import(lists,[nth/2]). 
 
