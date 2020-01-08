@@ -1,0 +1,14 @@
+{application, emqttd_kafka_bridge,
+ [{description, "EMQ X MQTT msg to Kafka bridge plugin"},
+  {vsn, "git"},
+  {modules, []},
+  {registered, [emqttd_kafka_bridge_sup]},
+  {applications, [kernel,stdlib]},
+  {mod, {emqttd_kafka_bridge_app,[]}},
+  {env, []},
+  {licenses, ["Apache-2.0"]},
+  {maintainers, ["EMQ X Team <contact@emqx.io>"]},
+  {links, [{"Homepage", "https://emqx.io/"},
+           {"Github", "https://github.com/sternz99/emqttd_kafka_bridge"}
+          ]}
+ ]}.
