@@ -21,7 +21,7 @@
 
 %% ACL callbacks
 -export([ init/1
-        , check_acl/5
+        , check_acl/2
         , reload_acl/1
         , description/0
         ]).

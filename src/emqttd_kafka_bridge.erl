@@ -83,26 +83,28 @@ on_session_terminated(ClientId, Username, Reason, _Env) ->
     io:format("session(~s/~s) terminated: ~p.", [ClientId, Username, Reason]).
 
 %% transform message and return
-on_message_publish(Message = #mqtt_message{topic = <<"$SYS/", _/binary>>}, _Env) ->
+on_message_publish(Message = #message{topic = <<"$SYS/", _/binary>>}, _Env) ->
     {ok, Message};
 
-on_message_publish(Message = #mqtt_message{pktid   = PkgId,
-                        qos     = Qos,
-                        retain  = Retain,
-                        dup     = Dup,
-                        topic   = Topic,
-                        payload = Payload
-						}, _Env) ->
-    io:format("publish ~s~n", [emqttd_message:format(Message)]),
-    Str1 = <<"{\"topic\":\"">>,
-    Str2 = <<"\", \"message\":[">>,
-    Str3 = <<"]}">>,
-    Str4 = <<Str1/binary, Topic/binary, Str2/binary, Payload/binary, Str3/binary>>,
-	{ok, KafkaTopic} = application:get_env(emqttd_kafka_bridge, values),
+on_message_publish(Message, _Env) ->
+    io:format("Publish ~s~n", [emqx_message:format(Message)]),
+    {ok, KafkaTopic} = application:get_env(emqttd_kafka_bridge, values),
     ProduceTopic = proplists:get_value(kafka_producer_topic, KafkaTopic),
-    ekaf:produce_async(ProduceTopic, Str4),	
+    
+    Topic=Message#message.topic,
+    Payload=Message#message.payload,
+    Qos=Message#message.qos,
+    Timestamp=Message#message.timestamp,
+    Json = jsx:encode([
+            {type,<<"published">>},
+            {topic,Topic},
+            {payload,Payload},
+            {qos,Qos},
+            {cluster_node,node()}
+            %%,{ts,emqx_time:now_to_secs(Timestamp)}
+    ]),
+    ekaf:produce_async(ProduceTopic, Json),
     {ok, Message}.
-
 
 on_message_delivered(ClientId, Username, Message, _Env) ->
     io:format("delivered to client(~s/~s): ~s~n", [Username, ClientId, emqttd_message:format(Message)]),
